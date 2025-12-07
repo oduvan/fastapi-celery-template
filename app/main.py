@@ -13,6 +13,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
+from app.celery_tasks.router import router as celery_router
 from app.core.config import settings
 from app.files.router import router as files_router
 from app.items.router import router as items_router
@@ -70,6 +71,7 @@ app.include_router(items_router, prefix="/items", tags=["items"])
 app.include_router(files_router, prefix="/files", tags=["files"])
 app.include_router(websocket_router, prefix="/ws", tags=["websocket"])
 app.include_router(tasks_router, prefix="/tasks", tags=["background-tasks"])
+app.include_router(celery_router, prefix="/celery", tags=["celery-tasks"])
 app.include_router(pages_router, prefix="/pages", tags=["pages"], include_in_schema=False)
 
 

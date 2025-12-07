@@ -86,6 +86,24 @@ class Settings(BaseSettings):
             return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
+    # Celery
+    CELERY_BROKER_DB: int = 1
+    CELERY_RESULT_DB: int = 2
+
+    @property
+    def CELERY_BROKER_URL(self) -> str:
+        """Construct Celery broker URL from components."""
+        if self.REDIS_PASSWORD:
+            return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.CELERY_BROKER_DB}"
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.CELERY_BROKER_DB}"
+
+    @property
+    def CELERY_RESULT_BACKEND(self) -> str:
+        """Construct Celery result backend URL from components."""
+        if self.REDIS_PASSWORD:
+            return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.CELERY_RESULT_DB}"
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.CELERY_RESULT_DB}"
+
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = []
 

@@ -1,4 +1,4 @@
-.PHONY: help build up down restart logs shell test coverage format lint migrate makemigrations update-python update-frontend pre-commit-install clean
+.PHONY: help build up down restart logs shell test coverage format lint migrate makemigrations update-python update-frontend pre-commit-install clean celery-logs celery-shell
 
 help:
 	@echo "FastAPI Basic Template - Available commands:"
@@ -17,6 +17,8 @@ help:
 	@echo "  make update-python         - Update Python dependencies"
 	@echo "  make update-frontend       - Update frontend dependencies"
 	@echo "  make pre-commit-install    - Install pre-commit hooks"
+	@echo "  make celery-logs           - View Celery worker logs"
+	@echo "  make celery-shell          - Open shell in Celery worker container"
 	@echo "  make clean                 - Clean up containers, volumes, and images"
 
 build:
@@ -73,6 +75,12 @@ pre-commit-install:
 	.venv-precommit/bin/pip install -r requirements-precommit.txt
 	.venv-precommit/bin/pre-commit install
 	@echo "Pre-commit hooks installed"
+
+celery-logs:
+	docker compose logs -f celery-worker celery-beat
+
+celery-shell:
+	docker compose exec celery-worker /bin/bash
 
 clean:
 	docker compose down -v --rmi local --remove-orphans

@@ -15,6 +15,33 @@ services:
     networks:
       - fastapi-network
 
+  celery-worker:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    command: celery -A app.core.celery:celery_app worker --loglevel=info
+    networks:
+      - fastapi-network
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - celery-worker
+    command: celery -A app.core.celery:celery_app beat --loglevel=info
+    networks:
+      - fastapi-network
+
   postgres:
     image: postgres:18-alpine
     restart: unless-stopped
